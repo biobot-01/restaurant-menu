@@ -14,3 +14,5 @@ Base = declarative_base()
 
 # Insert at E_O_F #
 engine = create_engine('sqlite:///restaurantmenu.db')
+
+Base.metadata.create_all(engine)
