@@ -12,6 +12,13 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+
+class Restaurant(Base):
+    __tablename__ = 'restaurant'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+
 # Insert at E_O_F #
 engine = create_engine('sqlite:///restaurantmenu.db')
 
