@@ -11,3 +11,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 
 Base = declarative_base()
+
+# Insert at E_O_F #
+engine = create_engine('sqlite:///restaurantmenu.db')
