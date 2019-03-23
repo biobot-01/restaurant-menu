@@ -10,13 +10,13 @@ class WebServerHandler(BaseHTTPRequestHandler):
         try:
             if self.path.endswith('/hello'):
                 self.send_response(200)
-                self.send_header('Content-type', 'text/html')
+                self.send_header('Content-type', 'text/html; charset=utf-8')
                 self.end_headers()
 
                 output = '''
                     <html>
                       <head>
-                        <title>Restaurant Menu</title>
+                        <title>Hello</title>
                       </head>
                       <body>
                         <h1>Hello!</h1>
@@ -24,7 +24,28 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     </html>
                 '''
 
-                self.wfile.write(output)
+                self.wfile.write(output.encode())
+                print(output)
+                return
+
+            if self.path.endswith('/hola'):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html; charset=utf-8')
+                self.end_headers()
+
+                output = '''
+                    <html>
+                      <head>
+                        <title>Hola</title>
+                      </head>
+                      <body>
+                        <h1>&#161Hola</h1>
+                        <a href="/hello">Back to Hello</a>
+                      </body>
+                    </html>
+                '''
+
+                self.wfile.write(output.encode())
                 print(output)
                 return
         except IOError:
