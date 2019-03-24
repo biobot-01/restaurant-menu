@@ -51,6 +51,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
 
+    def do_POST(self):
+        try:
+            pass
+        except Exception as e:
+            raise
+
 
 def main():
     """Main function for this file is to create a web server instance"""
