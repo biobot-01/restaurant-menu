@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import parse_qs
 
 
 class WebServerHandler(BaseHTTPRequestHandler):
@@ -20,6 +21,14 @@ class WebServerHandler(BaseHTTPRequestHandler):
                       </head>
                       <body>
                         <h1>Hello!</h1>
+                        <br>
+                        <form action="/hello" method="POST">
+                          <label for="message">What would you like me to say?</label>
+                          <br>
+                          <input type="text" name="message">
+                          <br>
+                          <button type="submit">Tell me!</button>
+                        </form>
                       </body>
                     </html>
                 '''
@@ -53,9 +62,33 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            pass
+            length = int(self.headers.get('Content-length', 0))
+            data = self.rfile.read(length).decode()
+            message = parse_qs(data)['message'][0]
+
+            self.send_response(302)
+            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.end_headers()
+
+            output = '''<html>
+                <head>
+                  <title>Form POST</title>
+                </head>
+                <body>
+                  <h3>{}</h3>
+                  <form action="/hello" method="POST">
+                    <label for="message">What would you like me to say?</label>
+                    <br>
+                    <input type="text" name="message">
+                    <br>
+                    <button type="submit">Tell me!</button>
+                  </form>
+                </body>
+                </html>
+            '''
+            self.wfile.write(output.format(message).encode())
         except Exception as e:
-            raise
+            raise e
 
 
 def main():
