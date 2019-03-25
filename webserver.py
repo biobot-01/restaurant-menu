@@ -75,9 +75,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
                   <title>Form POST</title>
                 </head>
                 <body>
-                  <h1>{}</h1>
+                  <h1>Okay, how about this:</h1>
+                  <h2>{}</h2>
                   <form action="/hello" method="POST">
-                    <h2><label for="message">What would you like me to say?</label></h2>
+                    <h3><label for="message">What would you like me to say?</label></h3>
                     <br>
                     <input type="text" name="message">
                     <button type="submit">Tell me!</button>
