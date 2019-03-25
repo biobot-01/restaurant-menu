@@ -23,10 +23,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
                         <h1>Hello!</h1>
                         <br>
                         <form action="/hello" method="POST">
-                          <label for="message">What would you like me to say?</label>
+                          <h2><label for="message">What would you like me to say?</label></h2>
                           <br>
                           <input type="text" name="message">
-                          <br>
                           <button type="submit">Tell me!</button>
                         </form>
                       </body>
@@ -75,12 +74,11 @@ class WebServerHandler(BaseHTTPRequestHandler):
                   <title>Form POST</title>
                 </head>
                 <body>
-                  <h3>{}</h3>
+                  <h1>{}</h1>
                   <form action="/hello" method="POST">
-                    <label for="message">What would you like me to say?</label>
+                    <h2><label for="message">What would you like me to say?</label></h2>
                     <br>
                     <input type="text" name="message">
-                    <br>
                     <button type="submit">Tell me!</button>
                   </form>
                 </body>
