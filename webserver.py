@@ -87,6 +87,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 </html>
             '''
             self.wfile.write(output.format(message).encode())
+            print(output.format(message))
         except Exception as e:
             raise e
 
