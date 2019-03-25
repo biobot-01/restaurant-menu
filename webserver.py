@@ -64,6 +64,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             length = int(self.headers.get('Content-length', 0))
             data = self.rfile.read(length).decode()
             message = parse_qs(data)['message'][0]
+            message = message.replace("<", "&lt;")
 
             self.send_response(302)
             self.send_header('Content-type', 'text/html; charset=utf-8')
