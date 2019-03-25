@@ -10,6 +10,14 @@ from sqlalchemy import create_engine
 
 from sqlalchemy.orm import sessionmaker
 
+# Database to connect
+engine = create_engine('sqlite:///restaurantmenu.db')
+# Bind database to session
+Base.metadata.bind(engine)
+# Create the session
+Session = sessionmaker(bind=engine)
+session = Session()
+
 
 class WebServerHandler(BaseHTTPRequestHandler):
     """The HTTP method this web server can handle"""
