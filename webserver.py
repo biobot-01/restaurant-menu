@@ -54,7 +54,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
                 # Single restaurant entry html template
                 restaurant_name_content = '''<li>{restaurant_name}<br>
-                    <a href="#">edit</a>
+                    <a href="/restaurants/{restaurant_id}/edit">edit</a>
                     <a href="#">delete</a></li>
                 '''
 
@@ -65,7 +65,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
                     for restaurant in restaurants:
                         content += restaurant_name_content.format(
-                            restaurant_name=restaurant.name
+                            restaurant_name=restaurant.name,
+                            restaurant_id=restaurant.id
                         )
 
                     return content
@@ -89,7 +90,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/html; charset=utf-8')
                 self.end_headers()
 
-                # Main page layoout
+                # Main page layout
                 html = '''<!doctype html>
                     <html>
                       <head>
@@ -115,6 +116,53 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 # Print out response for debugging
                 print(html)
                 return
+
+            if self.path.endswith('/edit'):
+                # Separate id from uri path
+                restaurant_id = self.path.split('/')[2]
+                # Fetch the Restaurant resource of the id (restaurant_id)
+                this_restaurant = session.query(Restaurant).filter_by(
+                    id=restaurant_id
+                ).one()
+
+                if this_restaurant:
+                    # Send 200 OK response
+                    self.send_response(200)
+                    # Send headers
+                    self.send_header('Content-type', 'text/html; charset=utf-8')
+                    self.end_headers()
+
+                    # HTML page layout
+                    html = '''<!doctype html>
+                        <html>
+                          <head>
+                            <meta charset="utf-8">
+                            <title>Edit Restaurant</title>
+                            <meta name="viewport" content="width=device-width, initial-scale=1">
+                          </head>
+                          <body>
+                              <h1>Edit Restaurant</h1>
+                              <a href="/restaurants">Go back</a>
+                              <br><br>
+                              <form action="/restaurants/{restaurant_id}/edit" method="POST">
+                                <label for="restaurantName">Restaurant Name</label>
+                                <input type="text" name="restaurantName" placeholder="{restaurant_name}">
+                                <button type="submit">Create</button>
+                              </form>
+                          </body>
+                        </html>
+                    '''
+
+                    html_content = html.format(
+                        restaurant_name=this_restaurant.name,
+                        restaurant_id=this_restaurant.id
+                    )
+
+                    # Send the response
+                    self.wfile.write(html_content.encode())
+                    # Print out response for debugging
+                    print(html_content)
+                    return
 
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
