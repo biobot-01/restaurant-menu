@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask
+from flask import Flask, render_template
 
 from database_setup import Base, Restaurant, MenuItem
 
@@ -29,17 +29,8 @@ def restaurant_menu(restaurant_id):
     items = session.query(MenuItem).filter_by(
         restaurant_id=restaurant.id
     )
-    output = ''
 
-    for item in items:
-        output += item.name
-        output += '<br>'
-        output += item.price
-        output += '<br>'
-        output += item.description
-        output += '<br><br>'
-
-    return output
+    return render_template('menu.html', restaurant=restaurant, items=items)
 
 
 @app.route('/restaurant/<int:restaurant_id>/new')
