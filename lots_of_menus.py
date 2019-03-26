@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Restaurant, Base, MenuItem
+from database_setup import Base, Restaurant, MenuItem
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -29,7 +29,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Juicy grilled veggie patty with tomato mayo and lettuce",
+    description="Juicy grilled veggie patty with tomato, mayo and lettuce.",
     price="$7.50",
     course="Entree",
     restaurant=restaurant
@@ -41,7 +41,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="French Fries",
-    description="with garlic and parmesan",
+    description="with garlic and parmesan.",
     price="$2.99",
     course="Appetizer",
     restaurant=restaurant
@@ -52,7 +52,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Chicken Burger",
-    description="Juicy grilled chicken patty with tomato mayo and lettuce",
+    description="Juicy grilled chicken patty with tomato, mayo and lettuce.",
     price="$5.50",
     course="Entree",
     restaurant=restaurant
@@ -63,7 +63,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Chocolate Cake",
-    description="fresh baked and served with ice cream",
+    description="fresh baked and served with ice cream.",
     price="$3.99",
     course="Dessert",
     restaurant=restaurant
@@ -74,7 +74,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Sirloin Burger",
-    description="Made with grade A beef",
+    description="Made with grade A beef.",
     price="$7.99",
     course="Entree",
     restaurant=restaurant
@@ -85,7 +85,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Root Beer",
-    description="16oz of refreshing goodness",
+    description="16oz of refreshing goodness.",
     price="$1.99",
     course="Beverage",
     restaurant=restaurant
@@ -96,8 +96,8 @@ session.commit()
 
 menuItem = MenuItem(
     name="Iced Tea",
-    description="with Lemon",
-    price="$.99",
+    description="with Lemon.",
+    price="$0.99",
     course="Beverage",
     restaurant=restaurant
 )
@@ -107,7 +107,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Grilled Cheese Sandwich",
-    description="On texas toast with American Cheese",
+    description="On texas toast with American Cheese.",
     price="$3.49",
     course="Entree",
     restaurant=restaurant
@@ -118,7 +118,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Made with freshest of ingredients and home grown spices",
+    description="Made with freshest of ingredients and home grown spices.",
     price="$5.99",
     course="Entree",
     restaurant=restaurant
@@ -136,7 +136,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Chicken Stir Fry",
-    description="With your choice of noodles vegetables and sauces",
+    description="With your choice of noodles, vegetables and sauces.",
     price="$7.99",
     course="Entree",
     restaurant=restaurant
@@ -147,8 +147,8 @@ session.commit()
 
 menuItem = MenuItem(
     name="Peking Duck",
-    description="A famous duck dish from Beijing[1] that has been prepared since the imperial era. The meat is prized for its thin, crisp skin, with authentic versions of the dish serving mostly the skin and little meat, sliced in front of the diners by the cook.",
-    price="$25",
+    description="A famous duck dish from Beijing that has been prepared since the imperial era. The meat is prized for its thin, crisp skin, with authentic versions of the dish serving mostly the skin and little meat, sliced in front of the diners by the cook.",
+    price="$25.99",
     course="Entree",
     restaurant=restaurant
 )
@@ -159,7 +159,7 @@ session.commit()
 menuItem = MenuItem(
     name="Spicy Tuna Roll",
     description="Seared rare ahi, avocado, edamame, cucumber with wasabi soy sauce.",
-    price="15",
+    price="$15.00",
     course="Entree",
     restaurant=restaurant
 )
@@ -170,8 +170,9 @@ session.commit()
 menuItem = MenuItem(
     name="Nepali Momo",
     description="Steamed dumplings made with vegetables, spices and meat. ",
-    price="12",
-    course="Entree",restaurant=restaurant
+    price="$12.99",
+    course="Entree",
+    restaurant=restaurant
 )
 
 session.add(menuItem)
@@ -180,7 +181,7 @@ session.commit()
 menuItem = MenuItem(
     name="Beef Noodle Soup",
     description="A Chinese noodle soup made of stewed or red braised beef, beef broth, vegetables and Chinese noodles.",
-    price="14",
+    price="$14.99",
     course="Entree",
     restaurant=restaurant
 )
@@ -191,7 +192,7 @@ session.commit()
 menuItem = MenuItem(
     name="Ramen",
     description="A Japanese noodle soup dish. It consists of Chinese-style wheat noodles served in a meat- or (occasionally) fish-based broth, often flavored with soy sauce or miso, and uses toppings such as sliced pork, dried seaweed, kamaboko, and green onions.",
-    price="12",
+    price="$12.99",
     course="Entree",
     restaurant=restaurant
 )
@@ -252,7 +253,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Juicy grilled veggie patty with tomato mayo and lettuce",
+    description="Juicy grilled veggie patty with tomato, mayo and lettuce.",
     price="$9.50",
     course="Entree",
     restaurant=restaurant
@@ -281,7 +282,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Mushroom risotto",
-    description="Portabello mushrooms in a creamy risotto",
+    description="Portabello mushrooms in a creamy risotto.",
     price="$5.99",
     course="Entree",
     restaurant=restaurant
@@ -303,7 +304,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Cauliflower Manchurian",
-    description="Golden fried cauliflower florets in a midly spiced soya,garlic sauce cooked with fresh cilantro, celery, chilies,ginger & green onions",
+    description="Golden fried cauliflower florets in a midly spiced soya,garlic sauce cooked with fresh cilantro, celery, chilies, ginger & green onions.",
     price="$6.95",
     course="Appetizer",
     restaurant=restaurant
@@ -314,7 +315,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Aloo Gobi Burrito",
-    description="Vegan goodness. Burrito filled with rice, garbanzo beans, curry sauce, potatoes (aloo), fried cauliflower (gobi) and chutney. Nom Nom",
+    description="Vegan goodness. Burrito filled with rice, garbanzo beans, curry sauce, potatoes (aloo), fried cauliflower (gobi) and chutney. Nom Nom.",
     price="$7.95",
     course="Entree",
     restaurant=restaurant
@@ -325,7 +326,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Juicy grilled veggie patty with tomato mayo and lettuce",
+    description="Juicy grilled veggie patty with tomato, mayo and lettuce.",
     price="$6.80",
     course="Entree",
     restaurant=restaurant
@@ -336,14 +337,14 @@ session.commit()
 
 
 # Menu for Tony's Bistro
-restaurant = Restaurant(name="Tony\'s Bistro ")
+restaurant = Restaurant(name="Tony's Bistro")
 
 session.add(restaurant)
 session.commit()
 
 menuItem = MenuItem(
     name="Shellfish Tower",
-    description="Lobster, shrimp, sea snails, crawfish, stacked into a delicious tower",
+    description="Lobster, shrimp, sea snails, crawfish, stacked into a delicious tower.",
     price="$13.95",
     course="Entree",
     restaurant=restaurant
@@ -354,7 +355,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Chicken and Rice",
-    description="Chicken... and rice",
+    description="Chicken... and rice.",
     price="$4.95",
     course="Entree",
     restaurant=restaurant)
@@ -364,7 +365,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Mom's Spaghetti",
-    description="Spaghetti with some incredible tomato sauce made by mom",
+    description="Spaghetti with some incredible tomato sauce made by mom.",
     price="$6.95",
     course="Entree",
     restaurant=restaurant
@@ -374,8 +375,8 @@ session.add(menuItem)
 session.commit()
 
 menuItem = MenuItem(
-    name="Choc Full O\' Mint (Smitten\'s Fresh Mint Chip ice cream)",
-    description="Milk, cream, salt, ..., Liquid nitrogen magic",
+    name="Choc Full O' Mint (Smitten's Fresh Mint Chip ice cream)",
+    description="Milk, cream, salt, ..., Liquid nitrogen magic.",
     price="$3.95",
     course="Dessert",
     restaurant=restaurant
@@ -397,14 +398,14 @@ session.commit()
 
 
 # Menu for Andala's
-restaurant = Restaurant(name="Andala\'s")
+restaurant = Restaurant(name="Andala's")
 
 session.add(restaurant)
 session.commit()
 
 menuItem = MenuItem(
     name="Lamb Curry",
-    description="Slow cook that thang in a pool of tomatoes, onions and alllll those tasty Indian spices. Mmmm.",
+    description="Slow cook that thang in a pool of tomatoes, onions and all those tasty Indian spices. Mmmm.",
     price="$9.95",
     course="Entree",
     restaurant=restaurant
@@ -415,7 +416,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Chicken Marsala",
-    description="Chicken cooked in Marsala wine sauce with mushrooms",
+    description="Chicken cooked in Marsala wine sauce with mushrooms.",
     price="$7.95",
     course="Entree",
     restaurant=restaurant
@@ -448,7 +449,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Juicy grilled veggie patty with tomato mayo and lettuce",
+    description="Juicy grilled veggie patty with tomato, mayo and lettuce.",
     price="$7.00",
     course="Entree",
     restaurant=restaurant
@@ -458,8 +459,8 @@ session.add(menuItem)
 session.commit()
 
 
-# Menu for Auntie Ann's
-restaurant = Restaurant(name="Auntie Ann\'s Diner' ")
+# Menu for Auntie Ann's Diner
+restaurant = Restaurant(name="Auntie Ann's Diner")
 
 session.add(restaurant)
 session.commit()
@@ -477,7 +478,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Boysenberry Sorbet",
-    description="An unsettlingly huge amount of ripe berries turned into frozen (and seedless) awesomeness",
+    description="An unsettlingly huge amount of ripe berries turned into frozen (and seedless) awesomeness.",
     price="$2.99",
     course="Dessert",
     restaurant=restaurant
@@ -499,7 +500,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Morels on toast (seasonal)",
-    description="Wild morel mushrooms fried in butter, served on herbed toast slices",
+    description="Wild morel mushrooms fried in butter, served on herbed toast slices.",
     price="$7.50",
     course="Appetizer",
     restaurant=restaurant
@@ -510,7 +511,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Tandoori Chicken",
-    description="Chicken marinated in yoghurt and seasoned with a spicy mix(chilli, tamarind among others) and slow cooked in a cylindrical clay or metal oven which gets its heat from burning charcoal.",
+    description="Chicken marinated in yoghurt and seasoned with a spicy mix (chilli, tamarind among others) and slow cooked in a cylindrical clay or metal oven which gets its heat from burning charcoal.",
     price="$8.95",
     course="Entree",
     restaurant=restaurant
@@ -521,7 +522,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Veggie Burger",
-    description="Juicy grilled veggie patty with tomato mayo and lettuce",
+    description="Juicy grilled veggie patty with tomato, mayo and lettuce.",
     price="$9.50",
     course="Entree",
     restaurant=restaurant
@@ -532,7 +533,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Spinach Ice Cream",
-    description="Vanilla ice cream made with organic spinach leaves",
+    description="Vanilla ice cream made with organic spinach leaves.",
     price="$1.99",
     course="Dessert",
     restaurant=restaurant
@@ -550,7 +551,7 @@ session.commit()
 
 menuItem = MenuItem(
     name="Super Burrito Al Pastor",
-    description="Marinated Pork, Rice, Beans, Avocado, Cilantro, Salsa, Tortilla",
+    description="Marinated Pork, Rice, Beans, Avocado, Cilantro, Salsa, Tortilla.",
     price="$5.95",
     course="Entree",
     restaurant=restaurant
