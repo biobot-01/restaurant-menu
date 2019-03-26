@@ -52,7 +52,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 '''
 
                 # Single restaurant entry html template
-                restaurant_name_content = '''<li>{restaurant_name}</li>'''
+                restaurant_name_content = '''<li>{restaurant_name}<br>
+                    <a href="#">edit</a>
+                    <a href="#">delete</a></li>
+                '''
 
                 def create_restaurant_names_content(restaurants):
                     """Return the names of restaurants with html template"""
