@@ -147,7 +147,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                               <form action="/restaurants/{restaurant_id}/edit" method="POST">
                                 <label for="restaurantName">Restaurant Name</label>
                                 <input type="text" name="restaurantName" placeholder="{restaurant_name}">
-                                <button type="submit">Create</button>
+                                <button type="submit">Rename</button>
                               </form>
                           </body>
                         </html>
@@ -189,6 +189,35 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/html; charset=utf-8')
                 self.send_header('Location', '/restaurants')
                 self.end_headers()
+
+            if self.path.endswith('/edit'):
+                # Get length of data
+                length = int(self.headers.get('Content-length', 0))
+                # Read the correct amount of data from request
+                data = self.rfile.read(length).decode()
+                # Extract the "restaurantName" field from request data
+                restaurant_name = parse_qs(data)["restaurantName"][0]
+                # Escape HTML tags in data for security
+                restaurant_name = restaurant_name.replace("<", "&lt;")
+                # Separate id from uri path
+                restaurant_id = self.path.split('/')[2]
+                # Fetch the Restaurant resource of the id (restaurant_id)
+                this_restaurant = session.query(Restaurant).filter_by(
+                    id=restaurant_id
+                ).one()
+
+                if this_restaurant != []:
+                    # Update Restaurant object and store data in database
+                    this_restaurant.name = restaurant_name
+                    session.add(this_restaurant)
+                    session.commit()
+
+                    # Send a 303 redirect back response (to restaurants page)
+                    self.send_response(303)
+                    # Send headers
+                    self.send_header('Content-type', 'text/html; charset=utf-8')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
 
         except Exception as e:
             raise e
