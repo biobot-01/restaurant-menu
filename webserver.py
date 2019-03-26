@@ -55,7 +55,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 # Single restaurant entry html template
                 restaurant_name_content = '''<li>{restaurant_name}<br>
                     <a href="/restaurants/{restaurant_id}/edit">edit</a>
-                    <a href="#">delete</a></li>
+                    <a href="/restaurants/{restaurant_id}/delete">delete</a></li>
                 '''
 
                 def create_restaurant_names_content(restaurants):
@@ -164,6 +164,52 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     print(html_content)
                     return
 
+            if self.path.endswith('/delete'):
+                # Separate id from uri path
+                restaurant_id = self.path.split('/')[2]
+                # Fetch the Restaurant resource of the id (restaurant_id)
+                this_restaurant = session.query(Restaurant).filter_by(
+                    id=restaurant_id
+                ).one()
+
+                if this_restaurant:
+                    # Send 200 OK response
+                    self.send_response(200)
+                    # Send headers
+                    self.send_header('Content-type', 'text/html; charset=utf-8')
+                    self.end_headers()
+
+                    # HTML page layout
+                    html = '''<!doctype html>
+                        <html>
+                          <head>
+                            <meta charset="utf-8">
+                            <title>Delete Restaurant</title>
+                            <meta name="viewport" content="width=device-width, initial-scale=1">
+                          </head>
+                          <body>
+                              <h1>Delete Restaurant</h1>
+                              <a href="/restaurants">Go back</a>
+                              <br><br>
+                              <h2>Are you sure you want to delete {restaurant_name}?</h2>
+                              <form action="/restaurants/{restaurant_id}/delete" method="POST">
+                                <button type="submit">Delete</button>
+                              </form>
+                          </body>
+                        </html>
+                    '''
+
+                    html_content = html.format(
+                        restaurant_name=this_restaurant.name,
+                        restaurant_id=this_restaurant.id
+                    )
+
+                    # Send the response
+                    self.wfile.write(html_content.encode())
+                    # Print out response for debugging
+                    print(html_content)
+                    return
+
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
 
@@ -210,6 +256,26 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     # Update Restaurant object and store data in database
                     this_restaurant.name = restaurant_name
                     session.add(this_restaurant)
+                    session.commit()
+
+                    # Send a 303 redirect back response (to restaurants page)
+                    self.send_response(303)
+                    # Send headers
+                    self.send_header('Content-type', 'text/html; charset=utf-8')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
+
+            if self.path.endswith('/delete'):
+                # Separate id from uri path
+                restaurant_id = self.path.split('/')[2]
+                # Fetch the Restaurant resource of the id (restaurant_id)
+                this_restaurant = session.query(Restaurant).filter_by(
+                    id=restaurant_id
+                ).one()
+
+                if this_restaurant:
+                    # Delete the Restaurant object from the database
+                    session.delete(this_restaurant)
                     session.commit()
 
                     # Send a 303 redirect back response (to restaurants page)
