@@ -102,8 +102,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
                           <a href="/restaurants">Go back</a>
                           <br><br>
                           <form action="/restaurants/new" method="POST">
-                            <label for="name">Restaurant Name</label>
-                            <input type="text" name="name" placeholder="New Restaurant Name">
+                            <label for="restaurantName">Restaurant Name</label>
+                            <input type="text" name="restaurantName" placeholder="New Restaurant Name">
                             <button type="submit">Create</button>
                           </form>
                       </body>
@@ -121,33 +121,27 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            length = int(self.headers.get('Content-length', 0))
-            data = self.rfile.read(length).decode()
-            message = parse_qs(data)['message'][0]
-            message = message.replace("<", "&lt;")
+            if self.path.endswith('/restaurants/new'):
+                # Get length of data
+                length = int(self.headers.get('Content-length', 0))
+                # Read the correct amount of data from request
+                data = self.rfile.read(length).decode()
+                # Extract the "restaurantName" field from request data
+                restaurant_name = parse_qs(data)["restaurantName"][0]
+                # Escape HTML tags in data for security
+                restaurant_name = restaurant_name.replace("<", "&lt;")
+                # Create new Restaurant object and store data in database
+                new_restaurant = Restaurant(name=restaurant_name)
+                session.add(new_restaurant)
+                session.commit()
 
-            self.send_response(302)
-            self.send_header('Content-type', 'text/html; charset=utf-8')
-            self.end_headers()
+                # Send a 303 redirect back response (to restaurants page)
+                self.send_response(303)
+                # Send headers
+                self.send_header('Content-type', 'text/html; charset=utf-8')
+                self.send_header('Location', '/restaurants')
+                self.end_headers()
 
-            output = '''<html>
-                <head>
-                  <title>Form POST</title>
-                </head>
-                <body>
-                  <h1>Okay, how about this:</h1>
-                  <h2>{}</h2>
-                  <form action="/hello" method="POST">
-                    <h3><label for="message">What would you like me to say?</label></h3>
-                    <br>
-                    <input type="text" name="message">
-                    <button type="submit">Tell me!</button>
-                  </form>
-                </body>
-                </html>
-            '''
-            self.wfile.write(output.format(message).encode())
-            print(output.format(message))
         except Exception as e:
             raise e
 
