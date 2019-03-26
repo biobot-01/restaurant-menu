@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 # Database to connect
 engine = create_engine('sqlite:///restaurantmenu.db')
 # Bind database to session
-Base.metadata.bind(engine)
+Base.metadata.bind = engine
 # Create the session
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -24,52 +24,58 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            if self.path.endswith('/hello'):
+            if self.path.endswith('/restaurants'):
+                # Query database and fetch all the restaurant names
+                restaurants = session.query(Restaurant).all()
+                # Send 200 OK response
                 self.send_response(200)
+                # Send headers
                 self.send_header('Content-type', 'text/html; charset=utf-8')
                 self.end_headers()
 
-                output = '''
+                # Main page layoout
+                html = '''<!doctype html>
                     <html>
                       <head>
-                        <title>Hello</title>
+                        <meta charset="utf-8">
+                        <title>Restaurant Names</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
                       </head>
                       <body>
-                        <h1>Hello!</h1>
-                        <br>
-                        <form action="/hello" method="POST">
-                          <h2><label for="message">What would you like me to say?</label></h2>
+                          <h1>Restaurant Names</h1>
                           <br>
-                          <input type="text" name="message">
-                          <button type="submit">Tell me!</button>
-                        </form>
+                          <ul>
+                            {restaurant_names}
+                          </ul>
                       </body>
                     </html>
                 '''
 
-                self.wfile.write(output.encode())
-                print(output)
-                return
+                # Single restaurant entry html template
+                restaurant_name_content = '''<li>{restaurant_name}</li>'''
 
-            if self.path.endswith('/hola'):
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html; charset=utf-8')
-                self.end_headers()
+                def create_restaurant_names_content(restaurants):
+                    """Return the names of restaurants with html template"""
 
-                output = '''
-                    <html>
-                      <head>
-                        <title>Hola</title>
-                      </head>
-                      <body>
-                        <h1>&#161Hola</h1>
-                        <a href="/hello">Back to Hello</a>
-                      </body>
-                    </html>
-                '''
+                    content = ''
 
-                self.wfile.write(output.encode())
-                print(output)
+                    for restaurant in restaurants:
+                        content += restaurant_name_content.format(
+                            restaurant_name=restaurant.name
+                        )
+
+                    return content
+
+                rendered_content = html.format(
+                    restaurant_names=create_restaurant_names_content(
+                        restaurants
+                    )
+                )
+
+                # Send the response
+                self.wfile.write(rendered_content.encode())
+                # Print out response for debugging
+                print(rendered_content)
                 return
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
