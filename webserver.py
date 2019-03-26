@@ -43,6 +43,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                       </head>
                       <body>
                           <h1>Restaurant Names</h1>
+                          <a href="/restaurants/new">Add a new Restaurant</a>
                           <br>
                           <ul>
                             {restaurant_names}
@@ -80,6 +81,41 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 # Print out response for debugging
                 print(rendered_content)
                 return
+
+            if self.path.endswith('/restaurants/new'):
+                # Send 200 OK response
+                self.send_response(200)
+                # Send headers
+                self.send_header('Content-type', 'text/html; charset=utf-8')
+                self.end_headers()
+
+                # Main page layoout
+                html = '''<!doctype html>
+                    <html>
+                      <head>
+                        <meta charset="utf-8">
+                        <title>Add New Restaurant</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                      </head>
+                      <body>
+                          <h1>Add New Restaurant</h1>
+                          <a href="/restaurants">Go back</a>
+                          <br><br>
+                          <form action="/restaurants/new" method="POST">
+                            <label for="name">Restaurant Name</label>
+                            <input type="text" name="name" placeholder="New Restaurant Name">
+                            <button type="submit">Create</button>
+                          </form>
+                      </body>
+                    </html>
+                '''
+
+                # Send the response
+                self.wfile.write(html.encode())
+                # Print out response for debugging
+                print(html)
+                return
+
         except IOError:
             self.send_error(404, "File Not Found {}".format(self.path))
 
