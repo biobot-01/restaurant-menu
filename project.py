@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 
 from database_setup import Base, Restaurant, MenuItem
 
@@ -33,9 +33,28 @@ def restaurant_menu(restaurant_id):
     return render_template('menu.html', restaurant=restaurant, items=items)
 
 
-@app.route('/restaurant/<int:restaurant_id>/new')
+@app.route('/restaurant/<int:restaurant_id>/new', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
-    return "page to create a new menu item. Task 1 complete!"
+    if request.method == 'POST':
+        new_item = MenuItem(
+            name=request.form['name'],
+            restaurant_id=restaurant_id,
+            description=request.form['description'],
+            price=request.form['price'],
+            course=request.form['course']
+        )
+        session.add(new_item)
+        session.commit()
+
+        return redirect(url_for(
+            'restaurant_menu',
+            restaurant_id=restaurant_id
+        ))
+    else:
+        return render_template(
+            'new-menu-item.html',
+            restaurant_id=restaurant_id
+        )
 
 
 @app.route('/restaurant/<int:restaurant_id>/<int:menu_id>/edit')
