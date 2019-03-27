@@ -5,32 +5,103 @@
     <title>Edit Menu Item</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
-  <body>
-    <h1>Edit Menu Item</h1>
-    <br>
-    <form action="{{ url_for('edit_menu_item', restaurant_id=item.restaurant_id, menu_id=item.id) }}" method="post">
-      <label for="name">Name: </label>
-      <input type="text" size="30" name="name" placeholder="{{ item.name }}">
-      <br>
-      <label for="description">Description: </label>
-      <textarea name="description" size="250" rows="4" cols="80" placeholder="{{ item.description }}"></textarea>
-      <br>
-      <label for="price">Price: </label>
-      <input type="text" size="6" name="price" placeholder="{{ item.price }}">
-      <br>
-      <label for="course">Course: </label>
-      <select name="course">
-        <option value="{{ item.course }}">Selected {{ item.course }}</option>
-        <option value="Appetizer">Appetizer</option>
-        <option value="Entree">Entree</option>
-        <option value="Dessert">Dessert</option>
-        <option value="Beverage">Beverage</option>
-      </select>
-      <br>
-      <button type="submit">Update Item</button>
-    </form>
-    <br>
-    <a href="{{ url_for('restaurant_menu', restaurant_id=item.restaurant_id) }}">Cancel</a>
+  <body class="has-background-grey-dark">
+    <div class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-three-fifths">
+              <h1 class="title is-2 has-text-light has-text-centered">Edit Menu Item</h1>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-two-thirds">
+            <form action="{{ url_for('edit_menu_item', restaurant_id=item.restaurant_id, menu_id=item.id) }}" method="post">
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label has-text-white-ter" for="name">Name:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input" type="text" size="30" name="name" placeholder="{{ item.name }}">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label has-text-white-ter" for="description">Description:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <textarea class="textarea" name="description" size="250" rows="4" cols="40" placeholder="{{ item.description }}"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label has-text-white-ter" for="price">Price:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input class="input" type="text" size="6" name="price" placeholder="{{ item.price }}">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                  <label class="label has-text-white-ter" for="course">Course:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <div class="select">
+                        <select name="course">
+                          <option value="{{ item.course }}">Selected {{ item.course }}</option>
+                          <option value="Appetizer">Appetizer</option>
+                          <option value="Entree">Entree</option>
+                          <option value="Dessert">Dessert</option>
+                          <option value="Beverage">Beverage</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-medium">
+                </div>
+                <div class="field-body">
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button class="button is-success is-medium is-outlined" type="submit">Update Item</button>
+                    </div>
+                    <div class="control">
+                      <a class="button is-text is-medium has-text-grey-light" href="{{ url_for('restaurant_menu', restaurant_id=item.restaurant_id) }}">Cancel</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

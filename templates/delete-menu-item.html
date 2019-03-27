@@ -5,15 +5,44 @@
     <title>Delete Menu Item</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
-  <body>
-    <h1>Delete Menu Item</h1>
-    <br>
-    <h2>Are you sure you want to delete {{ item.name }}?</h2>
-    <form action="{{ url_for('delete_menu_item', restaurant_id=item.restaurant_id, menu_id=item.id) }}" method="post">
-      <button type="submit">Delete</button>
-    </form>
-    <br>
-    <a href="{{ url_for('restaurant_menu', restaurant_id=item.restaurant_id) }}">Cancel</a>
+  <body class="has-background-grey-dark">
+    <div class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-three-fifths">
+              <h1 class="title is-2 has-text-light has-text-centered">Delete Menu Item</h1>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-two-thirds">
+            <div class="content has-text-centered">
+              <h2 class="title is-4 has-text-white-ter">Are you sure you want to delete {{ item.name }}?</h2>
+            </div>
+            <form action="{{ url_for('delete_menu_item', restaurant_id=item.restaurant_id, menu_id=item.id) }}" method="post">
+              <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                  <button class="button is-danger is-large" type="submit">Delete</button>
+                </div>
+                <div class="control">
+                  <a class="button is-text is-large has-text-grey-light" href="{{ url_for('restaurant_menu', restaurant_id=item.restaurant_id) }}">Cancel</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
