@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 
 from database_setup import Base, Restaurant, MenuItem
 
@@ -46,6 +46,8 @@ def new_menu_item(restaurant_id):
         session.add(new_item)
         session.commit()
 
+        flash("new menu item created!")
+
         return redirect(url_for(
             'restaurant_menu',
             restaurant_id=restaurant_id
@@ -80,6 +82,8 @@ def edit_menu_item(restaurant_id, menu_id):
         session.add(edit_item)
         session.commit()
 
+        flash("menu item edited!")
+
         return redirect(url_for(
             'restaurant_menu',
             restaurant_id=restaurant_id
@@ -102,6 +106,8 @@ def delete_menu_item(restaurant_id, menu_id):
         session.delete(delete_item)
         session.commit()
 
+        flash("menu item deleted!")
+
         return redirect(url_for(
             'restaurant_menu',
             restaurant_id=restaurant_id
@@ -114,5 +120,6 @@ def delete_menu_item(restaurant_id, menu_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='127.0.0.1', port=8000)
