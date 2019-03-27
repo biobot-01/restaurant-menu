@@ -21,13 +21,13 @@ session = Session()
 
 
 @app.route('/')
-@app.route('/restaurants/<int:restaurant_id>/')
+@app.route('/restaurants/<int:restaurant_id>/menu')
 def restaurant_menu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(
         id=restaurant_id
     ).one()
     items = session.query(MenuItem).filter_by(
-        restaurant_id=restaurant.id
+        restaurant_id=restaurant_id
     )
 
     return render_template('menu.html', restaurant=restaurant, items=items)
@@ -87,8 +87,6 @@ def edit_menu_item(restaurant_id, menu_id):
     else:
         return render_template(
             'edit-menu-item.html',
-            restaurant_id=restaurant_id,
-            menu_id=menu_id,
             item=edit_item
         )
 
@@ -111,7 +109,6 @@ def delete_menu_item(restaurant_id, menu_id):
     else:
         return render_template(
             'delete-menu-item.html',
-            restaurant_id=restaurant_id,
             item=delete_item
         )
 
