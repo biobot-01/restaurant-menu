@@ -23,7 +23,15 @@
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
 
-    <p>Boilerplate plate from base.html</p>
+    <header class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">{{ self.title() }}</h1>
+
+          <hr>
+        </div>
+      </div>
+    </header>
 
     {% block content %}
     {% endblock %}

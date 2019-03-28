@@ -2,4 +2,28 @@
 {% block title %}Restaurants{% endblock %}
 
 {% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-8">
+        {% if restaurants %}
+          <div class="content">
+            {% for restaurant in restaurants %}
+              <h2 class="title is-4 is-spaced">
+                <a href="#">{{ restaurant.name }}</a>
+              </h2>
+
+              <a href="#">Edit</a>
+              <a href="#">Delete</a>
+
+              <hr>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="content">There are no restaurants listed yet. Add one!</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
