@@ -64,7 +64,17 @@ item = {
 @app.route('/')
 @app.route('/restaurants')
 def show_restaurants():
-    return render_template('restaurants.html', restaurants=restaurants)
+    # restaurants = []
+    no_restaurants_msg = None
+
+    if not restaurants:
+        no_restaurants_msg = "There are no restaurants listed yet. Add one!"
+
+    return render_template(
+        'restaurants.html',
+        restaurants=restaurants,
+        no_restaurants_msg=no_restaurants_msg
+    )
 
 
 @app.route('/restaurant/new')
