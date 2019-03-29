@@ -87,14 +87,14 @@ def new_restaurant():
 
 @app.route('/restaurant/<int:restaurant_id>/edit')
 def edit_restaurant(restaurant_id):
-    return render_template('edit-restaurant.html', restaurant_id=restaurant_id)
+    return render_template('edit-restaurant.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete')
 def delete_restaurant(restaurant_id):
     return render_template(
         'delete-restaurant.html',
-        restaurant_id=restaurant_id
+        restaurant=restaurant
     )
 
 
@@ -108,6 +108,7 @@ def show_restaurant_menu(restaurant_id):
 
     return render_template(
         'menu.html',
+        restaurant=restaurant,
         items=items,
         no_items_msg=no_items_msg
     )
@@ -115,15 +116,15 @@ def show_restaurant_menu(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new')
 def new_menu_item(restaurant_id):
-    return render_template('new-menu-item.html', restaurant_id=restaurant_id)
+    return render_template('new-menu-item.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/edit')
 def edit_menu_item(restaurant_id, menu_id):
     return render_template(
         'edit-menu-item.html',
-        restaurant_id=restaurant_id,
-        menu_id=menu_id
+        restaurant=restaurant,
+        item=item
     )
 
 
@@ -131,8 +132,8 @@ def edit_menu_item(restaurant_id, menu_id):
 def delete_menu_item(restaurant_id, menu_id):
     return render_template(
         'delete-menu-item.html',
-        restaurant_id=restaurant_id,
-        menu_id=menu_id
+        restaurant=restaurant,
+        item=item
     )
 
 

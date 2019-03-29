@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% block title %}New Menu Item{% endblock %}
+{% block title %}{{ restaurant.name }}{% endblock %}
 
 {% block content %}
 <section class="section">
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
+        <div class="content has-text-centered">
+          <h2 class="title is-4">New Menu Item for {{ self.title() }}</h2>
+        </div>
+
         <form action="#" method="post">
           <div class="field is-horizontal">
             <div class="field-label is-medium">
