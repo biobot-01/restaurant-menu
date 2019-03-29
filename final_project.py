@@ -17,6 +17,7 @@ session = Session()
 @app.route('/')
 @app.route('/restaurants')
 def show_restaurants():
+    restaurants = session.query(Restaurant).all()
     no_restaurants_msg = None
 
     if not restaurants:
