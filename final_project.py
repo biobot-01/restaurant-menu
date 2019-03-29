@@ -6,6 +6,8 @@ app = Flask(__name__)
 
 # Add fake variables for testing
 # Fake Restaurants
+# restaurants = []
+
 restaurant = {'name': 'The CRUDdy Crab', 'id': '1'}
 
 restaurants = [
@@ -15,6 +17,8 @@ restaurants = [
 ]
 
 # Fake Menu Items
+# items = []
+
 items = [
     {
         'name': 'Cheese Pizza',
@@ -64,7 +68,6 @@ item = {
 @app.route('/')
 @app.route('/restaurants')
 def show_restaurants():
-    # restaurants = []
     no_restaurants_msg = None
 
     if not restaurants:
@@ -98,7 +101,16 @@ def delete_restaurant(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>')
 @app.route('/restaurant/<int:restaurant_id>/menu')
 def show_restaurant_menu(restaurant_id):
-    return render_template('menu.html', restaurant_id=restaurant_id)
+    no_items_msg = None
+
+    if not items:
+        no_items_msg = "There are no items on this menu yet. Add some!"
+
+    return render_template(
+        'menu.html',
+        items=items,
+        no_items_msg=no_items_msg
+    )
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new')
