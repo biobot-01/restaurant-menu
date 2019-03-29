@@ -16,7 +16,7 @@
                 <a href="#">{{ restaurant.name }}</a>
               </h2>
 
-              <a href="#">Edit</a>
+              <a href="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}">Edit</a>
               <a href="#">Delete</a>
 
               {% if not loop.last %}

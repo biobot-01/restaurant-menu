@@ -6,7 +6,7 @@
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
-        <form action="#" method="post">
+        <form action="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}" method="post">
           <div class="field is-horizontal">
             <div class="field-label is-medium">
               <label class="label" for="name">Name</label>
@@ -28,11 +28,11 @@
             <div class="field-body">
               <div class="field is-grouped">
                 <div class="control">
-                  <button class="button is-success is-medium" type="button" name="button">Save</button>
+                  <button class="button is-success is-medium" type="submit">Save</button>
                 </div>
 
                 <div class="control">
-                  <a class="button is-text is-medium" href="#">Cancel</a>
+                  <a class="button is-text is-medium" href="{{ url_for('show_restaurants') }}">Cancel</a>
                 </div>
               </div>
             </div>
