@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Restaurants{% endblock %}
 {% block add_link %}
-<a class="button is-primary" href="#">Add Restaurant</a>
+<a class="button is-primary" href="{{ url_for('new_restaurant') }}">Add Restaurant</a>
 {% endblock %}
 
 {% block content %}
