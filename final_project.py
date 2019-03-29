@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 
 from flask import Flask, render_template
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from database_setup import Base, Restaurant, MenuItem
 
 app = Flask(__name__)
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+Session = sessionmaker(bind=engine)
+session = Session()
 
 # Add fake variables for testing
 # Fake Restaurants
