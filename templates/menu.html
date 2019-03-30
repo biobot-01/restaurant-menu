@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ restaurant.name }}{% endblock %}
 {% block add_link %}
-<a class="button is-primary" href="#">Add Menu Item</a>
+  {% if items %}
+    <a class="button is-primary" href="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}">Add Menu Item</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -39,7 +41,7 @@
         {% else %}
           <div class="content">
             <p>{{ no_items_msg }}</p>
-            <a class="button is-link" href="#">Add Menu Item</a>
+            <a class="button is-link" href="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}">Add Menu Item</a>
           </div>
         {% endif %}
       </div>

@@ -82,11 +82,11 @@
             <div class="field-body">
               <div class="field is-grouped">
                 <div class="control">
-                  <button class="button is-success is-medium" type="button" name="button">Create</button>
+                  <button class="button is-success is-medium" type="submit">Create</button>
                 </div>
 
                 <div class="control">
-                  <a class="button is-text is-medium" href="#">Cancel</a>
+                  <a class="button is-text is-medium" href="{{ url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">Cancel</a>
                 </div>
               </div>
             </div>
