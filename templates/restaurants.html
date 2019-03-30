@@ -13,7 +13,7 @@
           <div class="content">
             {% for restaurant in restaurants %}
               <h2 class="title is-4 is-spaced">
-                <a href="#">{{ restaurant.name }}</a>
+                <a href="{{url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a>
               </h2>
 
               <a href="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}">Edit</a>
