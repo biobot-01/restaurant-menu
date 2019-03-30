@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import (
+    Flask, render_template, request, redirect, url_for, jsonify, flash
+)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -39,6 +41,8 @@ def new_restaurant():
         session.add(new_restaurant)
         session.commit()
 
+        flash("New Restaurant Created")
+
         return redirect(url_for('show_restaurants'))
 
     return render_template('new-restaurant.html')
@@ -54,6 +58,8 @@ def edit_restaurant(restaurant_id):
         if request.form['name']:
             edit_restaurant.name = request.form['name']
 
+            flash("Restaurant Successfully Edited")
+
             return redirect(url_for('show_restaurants'))
 
     return render_template('edit-restaurant.html', restaurant=edit_restaurant)
@@ -68,6 +74,8 @@ def delete_restaurant(restaurant_id):
     if request.method == 'POST':
         session.delete(delete_restaurant)
         session.commit()
+
+        flash("Restaurant Successfully Deleted")
 
         return redirect(url_for('show_restaurants'))
 
@@ -117,6 +125,8 @@ def new_menu_item(restaurant_id):
         session.add(new_item)
         session.commit()
 
+        flash("Menu Item Created")
+
         return redirect(url_for(
             'show_restaurant_menu',
             restaurant_id=restaurant_id
@@ -153,6 +163,8 @@ def edit_menu_item(restaurant_id, menu_id):
         if course:
             edit_item.course = course
 
+        flash("Menu Item Successfully Edited")
+
         return redirect(url_for(
             'show_restaurant_menu',
             restaurant_id=restaurant_id
@@ -176,6 +188,8 @@ def delete_menu_item(restaurant_id, menu_id):
     if request.method == 'POST':
         session.delete(delete_item)
         session.commit()
+
+        flash("Menu Item Successfully Deleted")
 
         return redirect(url_for(
             'show_restaurant_menu',
@@ -216,5 +230,6 @@ def menu_item_json(restaurant_id, menu_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='127.0.0.1', port=8000)
+    app.run(host='127.0.0.1', port=8000, threaded=False)

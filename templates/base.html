@@ -35,7 +35,23 @@
       </div>
     </header>
 
-    {% block content %}
+    {% block flash_messages %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="columns is-centered">
+            <div class="column is-6">
+              <div class="notification is-success">
+                <button class="delete"></button>
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endwith %}
     {% endblock %}
+
+    {% block content %}{% endblock %}
   </body>
 </html>
