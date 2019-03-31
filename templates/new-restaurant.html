@@ -2,44 +2,40 @@
 {% block title %}New Restaurant{% endblock %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <form action="{{ url_for('new_restaurant') }}" method="post">
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-              <label class="label" for="name">Name</label>
-            </div>
+<div class="columns is-centered">
+  <div class="column is-8">
+    <form action="{{ url_for('new_restaurant') }}" method="post">
+      <div class="field is-horizontal">
+        <div class="field-label is-medium">
+          <label class="label" for="name">Name</label>
+        </div>
 
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input class="input is-medium" type="text" name="name" placeholder="Restaurant Name">
-                </div>
-              </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <input class="input is-medium" type="text" name="name" placeholder="Restaurant Name">
             </div>
           </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label is-medium">
-            </div>
-
-            <div class="field-body">
-              <div class="field is-grouped">
-                <div class="control">
-                  <button class="button is-success is-medium" type="submit">Create</button>
-                </div>
-
-                <div class="control">
-                  <a class="button is-text is-medium" href="#">Cancel</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
-    </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-medium">
+        </div>
+
+        <div class="field-body">
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-success is-medium" type="submit">Create</button>
+            </div>
+
+            <div class="control">
+              <a class="button is-text is-medium" href="#">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
-</section>
+</div>
 {% endblock %}

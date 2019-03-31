@@ -1,34 +1,36 @@
 {% extends "base.html" %}
 {% block title %}Restaurants{% endblock %}
+
 {% block add_link %}
-<a class="button is-primary" href="{{ url_for('new_restaurant') }}">Add Restaurant</a>
+  {% if restaurants %}
+    <a class="button is-primary" href="{{ url_for('new_restaurant') }}">Add Restaurant</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <div class="columns">
-      <div class="column is-8">
-        {% if restaurants %}
-          <div class="content">
-            {% for restaurant in restaurants %}
-              <h2 class="title is-4 is-spaced">
-                <a href="{{url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a>
-              </h2>
+<div class="columns">
+  <div class="column is-8">
+    {% if restaurants %}
+      <div class="content">
+        {% for restaurant in restaurants %}
+          <h2 class="title is-4 is-spaced">
+            <a href="{{url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a>
+          </h2>
 
-              <a href="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}">Edit</a>
-              <a href="{{ url_for('delete_restaurant', restaurant_id=restaurant.id) }}">Delete</a>
+          <a href="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}">Edit</a>
+          <a href="{{ url_for('delete_restaurant', restaurant_id=restaurant.id) }}">Delete</a>
 
-              {% if not loop.last %}
-                <hr>
-              {% endif%}
-            {% endfor %}
-          </div>
-        {% else %}
-          <p class="content">{{ no_restaurants_msg }}</p>
-        {% endif %}
+          {% if not loop.last %}
+            <hr>
+          {% endif%}
+        {% endfor %}
       </div>
-    </div>
+    {% else %}
+      <div class="content">
+        <p>{{ no_restaurants_msg }}</p>
+        <a class="button is-link" href="{{ url_for('new_restaurant') }}">Add Restaurant</a>
+      </div>
+    {% endif %}
   </div>
-</section>
+</div>
 {% endblock %}
