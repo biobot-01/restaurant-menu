@@ -3,93 +3,68 @@
 
 {% block content %}
 <div class="columns is-centered">
-  <div class="column is-8">
-    <div class="content has-text-centered">
-      <h2 class="title is-4">New Menu Item for {{ self.title() }}</h2>
-    </div>
-
-    <form action="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}" method="post">
-      <div class="field is-horizontal">
-        <div class="field-label is-medium">
-          <label class="label" for="name">Name</label>
-        </div>
-
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-              <input class="input is-medium" type="text" name="name" size="40" placeholder="Item Name">
-            </div>
-          </div>
-        </div>
+  <div class="column is-6">
+    <div class="box">
+      <div class="content has-text-centered">
+        <h2 class="title is-4">New Menu Item</h2>
       </div>
 
-      <div class="field is-horizontal">
-        <div class="field-label is-medium">
-          <label class="label" for="description">Description</label>
-        </div>
+      <form action="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}" method="post">
+        <div class="field">
+          <label class="label is-medium" for="name">Name</label>
 
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-              <textarea class="textarea is-medium" name="description" rows="4" cols="80" size="150" placeholder="Item Description"></textarea>
-            </div>
+          <div class="control">
+            <input class="input is-medium" type="text" name="name" size="40" placeholder="Item Name">
           </div>
         </div>
-      </div>
 
-      <div class="field is-horizontal">
-        <div class="field-label is-medium">
-          <label class="label" for="price">Price</label>
-        </div>
+        <div class="field">
+          <label class="label is-medium" for="description">Description</label>
 
-        <div class="field-body">
-          <div class="field is-narrow">
-            <div class="control">
-              <input class="input is-medium" type="text" name="price" size="8" placeholder="$0.00">
-            </div>
+          <div class="control">
+            <textarea class="textarea is-medium" name="description" rows="4" cols="80" size="150" placeholder="Item Description"></textarea>
           </div>
         </div>
-      </div>
 
-      <div class="field is-horizontal">
-        <div class="field-label is-medium">
-          <label class="label" for="course">Course</label>
-        </div>
+        <div class="field">
+          <label class="label is-medium" for="price">Price</label>
 
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-              <div class="select is-medium">
-                <select name="course">
-                  <option value="">-- Select which course --</option>
-                  <option value="Appetizer">Appetizer</option>
-                  <option value="Entree">Entree</option>
-                  <option value="Dessert">Dessert</option>
-                  <option value="Beverage">Beverage</option>
-                </select>
+          <div class="field-body">
+            <div class="field is-narrow">
+              <div class="control">
+                <input class="input is-medium" type="text" name="price" size="8" placeholder="$0.00">
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="field is-horizontal">
-        <div class="field-label is-medium">
-        </div>
+        <div class="field">
+          <label class="label is-medium" for="course">Course</label>
 
-        <div class="field-body">
-          <div class="field is-grouped">
-            <div class="control">
-              <button class="button is-success is-medium" type="submit">Create</button>
-            </div>
-
-            <div class="control">
-              <a class="button is-text is-medium" href="{{ url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">Cancel</a>
+          <div class="control">
+            <div class="select is-medium">
+              <select name="course">
+                <option value="">-- Select which course --</option>
+                <option value="Appetizer">Appetizer</option>
+                <option value="Entree">Entree</option>
+                <option value="Dessert">Dessert</option>
+                <option value="Beverage">Beverage</option>
+              </select>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-success is-medium" type="submit">Create</button>
+          </div>
+
+          <div class="control">
+            <a class="button is-text is-medium" href="{{ url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

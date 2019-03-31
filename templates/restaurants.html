@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="columns">
-  <div class="column is-8">
+<div class="columns is-centered">
+  <div class="column is-6">
     {% if restaurants %}
-      <div class="content">
+      <div class="box content">
         {% for restaurant in restaurants %}
           <h2 class="title is-4 is-spaced">
             <a href="{{url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a>
