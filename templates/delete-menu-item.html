@@ -6,7 +6,7 @@
   <div class="column is-6">
     <div class="box">
       <div class="content">
-        <h2 class="title">Are you sure you want to delete {{ item.name }}?</h2>
+        <h2 class="title has-text-light">Are you sure you want to delete {{ item.name }}?</h2>
       </div>
 
       <form action="{{ url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=item.id) }}" method="post">
