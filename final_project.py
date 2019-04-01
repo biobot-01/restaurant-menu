@@ -57,8 +57,9 @@ def edit_restaurant(restaurant_id):
     ).one()
 
     if request.method == 'POST':
-        if request.form['name']:
-            edit_restaurant.name = request.form['name']
+        name = request.form['name']
+        if name:
+            edit_restaurant.name = name
 
             flash("Restaurant Successfully Edited")
 
