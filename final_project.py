@@ -36,14 +36,16 @@ def show_restaurants():
 def new_restaurant():
     if request.method == 'POST':
         name = request.form['name']
-        new_restaurant = Restaurant(name=name)
 
-        session.add(new_restaurant)
-        session.commit()
+        if name:
+            new_restaurant = Restaurant(name=name)
 
-        flash("New Restaurant Created")
+            session.add(new_restaurant)
+            session.commit()
 
-        return redirect(url_for('show_restaurants'))
+            flash("New Restaurant Created")
+
+            return redirect(url_for('show_restaurants'))
 
     return render_template('new-restaurant.html')
 
