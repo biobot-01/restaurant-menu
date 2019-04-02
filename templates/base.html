@@ -59,6 +59,8 @@
       </section>
     </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}
+      <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% endblock %}
   </body>
 </html>

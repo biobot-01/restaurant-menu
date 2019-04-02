@@ -218,7 +218,7 @@ def show_login():
     ) for x in range(32))
     login_session['state'] = state
 
-    return "The current session state is {}".format(login_session['state'])
+    return render_template('login.html', state=state)
 
 
 # JSON API Routes

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block head %}
+  {{ super() }}
+
+  <script src=" url_for('static', filename='js/vendor/jquery-3.3.1.min.js') "></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+  <!-- Load auth2 library & call gapi.auth2.init() to initialize the GoogleAuth object -->
+  <script>
+    function start() {
+        gapi.load('auth2', function() {
+            auth2 = gapi.auth2.init({
+                client_id: '462570963679-6u9r0menhrl2q5cjas9bcmod66fc0tch.apps.googleusercontent.com',
+                // Scopes to request in addition to 'profile' & 'email'
+                // scope: 'additional_scope'
+                scope: 'openid name'
+            });
+        });
+    }
+  </script>
+{% endblock %}
+
+{% block flash_messages %}
+  {% if error %}
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <div class="notification" id="result">
+          <button class="delete" type="button"></button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+  <div class="column is-6">
+    <div class="content has-text-centered">
+      <h2 class="title has-text-grey-lighter">{{ self.title() }}</h2>
+      <p class="subtitle has-text-grey-lighter">Please login to proceed</p>
+    </div>
+    <div class="box has-text-centered">
+      <div class="content">
+        <button class="button is-danger is-large is-fullwidth" type="button" id="signinButton">Sign in with Google</button>
+      </div>
+
+      <form action="#" method="post">
+        <div class="field">
+          <div class="control">
+            <input class="input is-large" type="email" name="email" placeholder="Your Email">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <input class="input is-large" type="password" name="password" placeholder="Your Password">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="checkbox has-text-grey" for="remember">
+            <input type="checkbox"> Remember me
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <button class="button is-link is-large is-fullwidth" type="submit">Login</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="content has-text-centered has-text-grey-light">
+      <a class="has-text-grey-lighter" href="#">Sign Up</a>
+      &nbsp;&#183;&nbsp;
+      <a class="has-text-grey-lighter" href="#">Forgot Password</a>
+      &nbsp;&#183;&nbsp;
+      <a class="has-text-grey-lighter" href="#">Need Help?</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
