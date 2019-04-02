@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
+import random
+import string
+
 from flask import (
-    Flask, render_template, request, redirect, url_for, jsonify, flash
+    Flask, render_template, request, redirect, url_for, jsonify, flash,
+    session as login_session
 )
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -204,6 +208,17 @@ def delete_menu_item(restaurant_id, menu_id):
         restaurant=restaurant,
         item=delete_item
     )
+
+
+@app.route('/login')
+def show_login():
+    # Create anti-forgery state token
+    state = ''.join(random.choice(
+        string.ascii_uppercase + string.digits
+    ) for x in range(32))
+    login_session['state'] = state
+
+    return "The current session state is {}".format(login_session['state'])
 
 
 # JSON API Routes
