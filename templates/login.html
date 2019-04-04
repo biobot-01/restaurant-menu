@@ -4,7 +4,7 @@
 {% block head %}
   {{ super() }}
 
-  <script src=" url_for('static', filename='js/vendor/jquery-3.3.1.min.js') "></script>
+  <script src="{{ url_for('static', filename='js/vendor/jquery-3.3.1.min.js') }}"></script>
   <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   <!-- Load auth2 library & call gapi.auth2.init() to initialize the GoogleAuth object -->
   <script>
