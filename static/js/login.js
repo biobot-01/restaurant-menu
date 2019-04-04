@@ -10,7 +10,7 @@ $(document).ready(function() {
                 // back to the main restaurants page
                 $.ajax({
                     type: 'POST',
-                    url: '/gconnect?state={{ state }}',
+                    url: '/gconnect?state={{ STATE }}',
                     // Include `X-Requested-With` header
                     // to protect against CSRF attacks
                     headers: {

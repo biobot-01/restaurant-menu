@@ -11,7 +11,7 @@
     function start() {
         gapi.load('auth2', function() {
             auth2 = gapi.auth2.init({
-                client_id: '462570963679-6u9r0menhrl2q5cjas9bcmod66fc0tch.apps.googleusercontent.com',
+                client_id: {{ CLIENT_ID }},
                 // Scopes to request in addition to 'profile' & 'email'
                 // scope: 'additional_scope'
                 scope: 'openid name'
