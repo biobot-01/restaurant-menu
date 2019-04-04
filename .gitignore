@@ -3,3 +3,4 @@ __pycache__/
 
 # Files to ignore
 *.db
+client_secrets.json
