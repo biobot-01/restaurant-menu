@@ -4,17 +4,14 @@
 {% block head %}
   {{ super() }}
 
-  <script src="{{ url_for('static', filename='js/vendor/jquery-3.3.1.min.js') }}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   <!-- Load auth2 library & call gapi.auth2.init() to initialize the GoogleAuth object -->
   <script>
     function start() {
         gapi.load('auth2', function() {
             auth2 = gapi.auth2.init({
-                client_id: {{ CLIENT_ID }},
-                // Scopes to request in addition to 'profile' & 'email'
-                // scope: 'additional_scope'
-                scope: 'openid name'
+                client_id: '{{ CLIENT_ID }}'
             });
         });
     }
@@ -22,7 +19,6 @@
 {% endblock %}
 
 {% block flash_messages %}
-  {% if error %}
     <div class="columns is-centered">
       <div class="column is-6">
         <div class="notification" id="result">
@@ -30,7 +26,6 @@
         </div>
       </div>
     </div>
-  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -84,5 +79,46 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+<script>
+  $(document).ready(function() {
+      $('#signinButton').click(function() {
+          function signInCallback(authResult) {
+              if (authResult['code']) {
+                  // Hide the sign-in button now that the user is authorized
+                  $('#signinButton').attr('style', 'display: none');
+
+                  // Send the one-time-code to the server, if the server
+                  // responds, write a 'login successful' message & redirect
+                  // back to the main restaurants page
+                  $.ajax({
+                      type: 'POST',
+                      url: '/gconnect?state={{ STATE }}',
+                      // Include `X-Requested-With` header
+                      // to protect against CSRF attacks
+                      headers: {
+                          'X-Requested-With': 'XMLHttpRequest'
+                      },
+                      contentType: 'application/octet-stream; charset=utf-8',
+                      processData: false,
+                      data: authResult['code'],
+                      success: function(result) {
+                          // Handle or verify the server response
+                          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...');
+
+                          setTimeout(function() {
+                              window.location.href = '/restaurants';
+                          }, 4000);
+                      }
+                  });
+              } else {
+                  // Handle no response
+                  console.log('There was an error: ' + authResult['error']);
+                  $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+              }
+          }
+
+          auth2.grantOfflineAccess().then(signInCallback);
+      });
+  });
+</script>
 {% endblock %}

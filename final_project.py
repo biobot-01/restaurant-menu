@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 
+import json
 import random
 import string
 
+import httplib2
+import requests
 from flask import (
     Flask, render_template, request, redirect, url_for, jsonify, flash,
-    session as login_session
+    session as login_session, make_response
 )
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 from database_setup import Base, Restaurant, MenuItem
+
+CLIENT_SECRET_FILE = 'client_secrets.json'
+
+with open(CLIENT_SECRET_FILE, 'r') as f:
+    web_client_id = json.load(f)['web']['client_id']
+
+CLIENT_ID = web_client_id
 
 app = Flask(__name__)
 
@@ -218,7 +229,114 @@ def show_login():
     ) for x in range(32))
     login_session['state'] = state
 
-    return render_template('login.html', state=state)
+    return render_template('login.html', CLIENT_ID=CLIENT_ID, STATE=state)
+
+
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    # Validate state token
+    if request.args.get('state') != login_session['state']:
+        response = make_response(
+            json.dumps('Invalid state parameter.'),
+            401
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Obtain authorization code
+    code = request.data
+
+    try:
+        # Upgrade authorization code into credentials object
+        oauth_flow = flow_from_clientsecrets(CLIENT_SECRET_FILE, scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'),
+            401
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Check access token is valid
+    access_token = credentials.access_token
+    auth_url = ("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}".format(access_token))
+    h = httplib2.Http()
+    result = json.loads(h.request(auth_url, 'GET')[1])
+
+    # If there was an error in the access token info, abort
+    if result.get('error') is not None:
+        response = make_response(
+            json.dumps(result.get('error')),
+            500
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Verify access token is used for intended user
+    google_id = credentials.id_token['sub']
+
+    if result['user_id'] != google_id:
+        response = make_response(
+            json.dumps("Token's user ID doesn't match given user ID."),
+            401
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Verify access token is valid for this app
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(
+            json.dumps("Token's client ID doesn't match app's ID."),
+            401
+        )
+        print("Token's client ID doesn't match app's ID.")
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Check if user is already logged in
+    stored_access_token = login_session.get('access_token')
+    stored_google_id = login_session.get('google_id')
+
+    if stored_access_token is not None and google_id == stored_google_id:
+        response = make_response(
+            json.dumps('Current user is already connected.'),
+            200
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Store access token in the session for later use
+    login_session['access_token'] = credentials.access_token
+    login_session['google_id'] = google_id
+
+    # Get user info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {
+        'access_token': credentials.access_token,
+        'alt': 'json'
+    }
+    user_request = requests.get(userinfo_url, params=params)
+    user_data = user_request.json()
+
+    login_session['username'] = user_data['name']
+    login_session['picture'] = user_data['picture']
+    login_session['email'] = user_data['email']
+
+    output = """<h1>Welcome, {}!</h1>
+        <img src="{}" style="width: 300px; height: 300px; border-radius: 50%;">
+    """.format(login_session['username'], login_session['picture'])
+
+    flash("You are now logged in as {}".format(login_session['username']))
+    print("Done!")
+    return output
 
 
 # JSON API Routes
