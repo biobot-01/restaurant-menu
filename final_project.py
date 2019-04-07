@@ -232,6 +232,7 @@ def show_login():
     return render_template('login.html', CLIENT_ID=CLIENT_ID, STATE=state)
 
 
+# Connect with Google login
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -263,7 +264,7 @@ def gconnect():
 
     # Check access token is valid
     access_token = credentials.access_token
-    auth_url = ("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}".format(access_token))
+    auth_url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}'.format(access_token)
     h = httplib2.Http()
     result = json.loads(h.request(auth_url, 'GET')[1])
 
@@ -338,6 +339,52 @@ def gconnect():
     print("Done!")
     return output
 
+
+# Disconnect Google login - revoke a current user's token and reset
+# their login session
+@app.route('/gdisconnect', methods=['POST'])
+def gdisconnect():
+    # Only disconnect a connected user
+    access_token = login_session.get('access_token')
+
+    if access_token is None:
+        response = make_response(
+            json.dumps('Current user not connected.'),
+            401
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    # Execute HTTP GET response to revoke current token
+    disconnect_url = 'https://accounts.google.com/o/oauth2/revoke?token={}'.format(access_token)
+    h = httplib2.Http()
+    result = h.request(disconnect_url, 'GET')[0]
+
+    if result['status'] == '200':
+        # Reset the user's session
+        del login_session['access_token']
+        del login_session['google_id']
+        del login_session['username']
+        del login_session['picture']
+        del login_session['email']
+
+        response = make_response(
+            json.dumps('Successfully disconnected.'),
+            200
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+    else:
+        # For any reason, the given token was invalid
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.'),
+            400
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
 
 # JSON API Routes
 @app.route('/restaurants/JSON')
