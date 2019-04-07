@@ -342,7 +342,7 @@ def gconnect():
 
 # Disconnect Google login - revoke a current user's token and reset
 # their login session
-@app.route('/gdisconnect', methods=['POST'])
+@app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user
     access_token = login_session.get('access_token')
