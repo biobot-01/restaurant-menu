@@ -49,6 +49,10 @@ def show_restaurants():
 
 @app.route('/restaurant/new', methods=['GET', 'POST'])
 def new_restaurant():
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
         name = request.form['name']
 
@@ -67,6 +71,10 @@ def new_restaurant():
 
 @app.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 def edit_restaurant(restaurant_id):
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     edit_restaurant = session.query(Restaurant).filter_by(
         id=restaurant_id
     ).one()
@@ -85,6 +93,10 @@ def edit_restaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 def delete_restaurant(restaurant_id):
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     delete_restaurant = session.query(Restaurant).filter_by(
         id=restaurant_id
     ).one()
@@ -125,6 +137,10 @@ def show_restaurant_menu(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 def new_menu_item(restaurant_id):
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
 
     if request.method == 'POST':
@@ -158,6 +174,10 @@ def new_menu_item(restaurant_id):
     methods=['GET', 'POST']
 )
 def edit_menu_item(restaurant_id, menu_id):
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     edit_item = session.query(MenuItem).filter_by(
         id=menu_id
@@ -200,6 +220,10 @@ def edit_menu_item(restaurant_id, menu_id):
     methods=['GET', 'POST']
 )
 def delete_menu_item(restaurant_id, menu_id):
+    # Check if user is signed in
+    if 'username' not in login_session:
+        return redirect('/login')
+
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     delete_item = session.query(MenuItem).filter_by(id=menu_id).one()
 
