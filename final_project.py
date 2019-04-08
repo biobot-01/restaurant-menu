@@ -25,7 +25,7 @@ CLIENT_ID = web_client_id
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantmenu_with_users.db')
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 session = Session()
