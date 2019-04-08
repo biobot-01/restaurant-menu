@@ -360,6 +360,13 @@ def gconnect():
     login_session['picture'] = user_data['picture']
     login_session['email'] = user_data['email']
 
+    user_id = get_user_id(login_session['email'])
+
+    if not user_id:
+        user_id = create_user(login_session)
+
+    login_session['user_id'] = user_id
+
     output = """<h1>Welcome, {}!</h1>
         <img src="{}" style="width: 300px; height: 300px; border-radius: 50%;">
     """.format(login_session['username'], login_session['picture'])
