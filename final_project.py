@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, User, Restaurant, MenuItem
 
 CLIENT_SECRET_FILE = 'client_secrets.json'
 
@@ -55,9 +55,13 @@ def new_restaurant():
 
     if request.method == 'POST':
         name = request.form['name']
+        user_id = login_session['user_id']
 
         if name:
-            new_restaurant = Restaurant(name=name)
+            new_restaurant = Restaurant(
+                name=name,
+                user_id=user_id
+            )
 
             session.add(new_restaurant)
             session.commit()
@@ -153,7 +157,8 @@ def new_menu_item(restaurant_id):
             description=description,
             price=price,
             course=course,
-            restaurant_id=restaurant_id
+            restaurant_id=restaurant_id,
+            user_id=restaurant.user_id
         )
 
         session.add(new_item)
@@ -409,6 +414,39 @@ def gdisconnect():
         response.headers['Content-type'] = 'application/json'
 
         return response
+
+
+def create_user(login_session):
+    new_user = User(
+        name=login_session['username'],
+        email=login_session['email'],
+        picture=login_session['picture']
+    )
+
+    session.add(new_user)
+    session.commit()
+
+    user = session.query(User).filter_by(
+        email=login_session['email']
+    ).one()
+
+    return user.id
+
+
+def get_user_info(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+
+    return user
+
+
+def get_user_id(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+
+        return user.id
+    except Exception:
+        return None
+
 
 # JSON API Routes
 @app.route('/restaurants/JSON')
