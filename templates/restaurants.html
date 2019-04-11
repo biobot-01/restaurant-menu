@@ -2,7 +2,7 @@
 {% block title %}Restaurants{% endblock %}
 
 {% block tabs %}
-  {% if restaurants and login_session %}
+  {% if restaurants %}
     <div class="hero-foot">
       <div class="container">
         <div class="columns is-centered">
@@ -26,9 +26,9 @@
   <div class="column is-6">
     {% if restaurants %}
       <div class="box content">
-        {% for restaurant in restaurants %}
+        {% for r in restaurants %}
           <h2 class="title is-4 is-spaced">
-            <a class="has-text-light" href="{{url_for('show_restaurant_menu', restaurant_id=restaurant.id) }}">{{ restaurant.name }}</a>
+            <a class="has-text-light" href="{{url_for('show_restaurant_menu', restaurant_id=r.id) }}">{{ r.name }}</a>
           </h2>
 
           {% if not loop.last %}
@@ -39,6 +39,7 @@
     {% else %}
       <div class="content">
         <p>{{ no_restaurants_msg }}</p>
+
         <a class="button is-link" href="{{ url_for('new_restaurant') }}">Add Restaurant</a>
       </div>
     {% endif %}
