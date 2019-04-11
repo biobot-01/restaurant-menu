@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ restaurant.name }}{% endblock %}
+
+{% block creator %}
+<div class="columns is-centered">
+  <div class="column is-4">
+    <div class="content media">
+      <div class="media-left">
+        <figure class="image is-96x96">
+          <img class="is-rounded" src="{{ creator.picture }}" alt="Image of {{ creator.name }}">
+        </figure>
+      </div>
+
+      <div class="media-content" style="padding-top: 30px;">
+        <p class="title is-4 has-text-grey-lighter">{{ creator.name }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="columns is-centered">
+  <div class="column is-6">
+    {% if items %}
+      <div class="box">
+        {% for i in items %}
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <h2 class="title has-text-light is-4">{{ i.name }}</h2>
+              </div>
+            </div>
+
+            <div class="level-right">
+              <p class="level-item">
+                <strong class=" has-text-light">{{ i.price }}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="content">
+            <p class="has-text-grey-lighter">{{ i.description }}</p>
+          </div>
+
+          {% if not loop.last %}
+            <hr>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="content">
+        <p>{{ no_items_msg }}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
