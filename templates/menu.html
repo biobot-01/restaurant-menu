@@ -1,9 +1,51 @@
 {% extends "base.html" %}
 {% block title %}{{ restaurant.name }}{% endblock %}
 
-{% block add_link %}
-  {% if items %}
-    <a class="button is-primary" href="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}">Add Menu Item</a>
+{% block creator %}
+<div class="columns is-centered">
+  <div class="column is-4">
+    <div class="content media">
+      <div class="media-left">
+        <figure class="image is-96x96">
+          <img class="is-rounded" src="{{ creator.picture }}" alt="Image of {{ creator.name }}">
+        </figure>
+      </div>
+
+      <div class="media-content" style="padding-top: 30px;">
+        <p class="title is-4 has-text-grey-lighter">{{ creator.name }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block tabs %}
+  {% if login_session %}
+    <div class="hero-foot">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-6">
+            <div class="tabs">
+              <ul>
+                {% if items %}
+                  <li>
+                    <a class="button is-primary" href="{{ url_for('new_menu_item', restaurant_id=restaurant.id) }}">Add Menu Item</a>
+                  </li>
+                {% endif %}
+
+                <li>
+                  <a class="has-text-warning" href="{{ url_for('edit_restaurant', restaurant_id=restaurant.id) }}">Edit Restaurant</a>
+                </li>
+
+                <li>
+                  <a class="has-text-danger" href="{{ url_for('delete_restaurant', restaurant_id=restaurant.id) }}">Delete Restaurant</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}
 
@@ -30,8 +72,11 @@
           <div class="content">
             <p class="has-text-grey-lighter">{{ item.description }}</p>
 
-            <a class="has-text-warning" href="{{ url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=item.id) }}">Edit</a>
-            <a class="has-text-danger" href="{{ url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=item.id) }}">Delete</a>
+            {% if login_session %}
+              <a class="has-text-warning" href="{{ url_for('edit_menu_item', restaurant_id=restaurant.id, menu_id=item.id) }}">Edit</a>
+
+              <a class="has-text-danger" href="{{ url_for('delete_menu_item', restaurant_id=restaurant.id, menu_id=item.id) }}">Delete</a>
+            {% endif %}
           </div>
 
           {% if not loop.last %}

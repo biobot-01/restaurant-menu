@@ -20,6 +20,22 @@
   <body>
     <div class="has-background-dark h-100">
       <header class="hero">
+        <div class="hero-head">
+          <nav class="navbar">
+            <div class="container">
+              <div class="navbar-menu">
+                <div class="navbar-end">
+                  {% if not login_session %}
+                    <a class="navbar-item has-text-grey-light" href="{{ url_for('show_login') }}">Login</a>
+                  {% else %}
+                    <a class="navbar-item has-text-grey-light" href="{{ url_for('gdisconnect') }}"></a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+
         <div class="hero-body">
           <div class="container">
             <div class="columns is-centered">
@@ -27,12 +43,14 @@
                 <h1 class="title has-text-white-ter">{{ self.title() }}</h1>
 
                 <hr>
-
-                {% block add_link %}{% endblock %}
               </div>
             </div>
+
+            {% block creator %}{% endblock %}
           </div>
         </div>
+
+        {% block tabs %}{% endblock %}
       </header>
 
       {% block flash_messages %}

@@ -123,6 +123,7 @@ def delete_restaurant(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/menu')
 def show_restaurant_menu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    creator = get_user_info(restaurant.user_id)
     menu_items = session.query(MenuItem).filter_by(
         restaurant_id=restaurant_id
     ).all()
@@ -134,6 +135,7 @@ def show_restaurant_menu(restaurant_id):
     return render_template(
         'menu.html',
         restaurant=restaurant,
+        creator=creator,
         items=menu_items,
         no_items_msg=no_menu_items_msg
     )
