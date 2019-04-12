@@ -4,7 +4,7 @@
 {% block head %}
   {{ super() }}
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="{{ url_for('static', filename='js/vendor/jquery-3.3.1.min.js') }}"></script>
   <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   <!-- Load auth2 library & call gapi.auth2.init() to initialize the GoogleAuth object -->
   <script>
@@ -16,6 +16,8 @@
         });
     }
   </script>
+
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2&appId=359573617994044&autoLogAppEvents=1"></script>
 {% endblock %}
 
 {% block flash_messages %}
@@ -37,7 +39,11 @@
     </div>
     <div class="box has-text-centered">
       <div class="content">
-        <button class="button is-danger is-large is-fullwidth" type="button" id="signinButton">Sign in with Google</button>
+        <div id="fb-root"></div>
+
+        <button class="button is-danger is-medium" type="button" id="signinButton">Log in with Google</button>
+
+        <div class="fb-login-button" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile, email" onlogin="checkLoginState(); sendTokenToServer();"></div>
       </div>
 
       <form action="#" method="post">
@@ -103,7 +109,7 @@
                       data: authResult['code'],
                       success: function(result) {
                           // Handle or verify the server response
-                          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...');
+                          $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...');
 
                           setTimeout(function() {
                               window.location.href = '/restaurants';
@@ -120,5 +126,63 @@
           auth2.grantOfflineAccess().then(signInCallback);
       });
   });
+</script>
+
+<script>
+  window.fbAsyncInit = function() {
+      FB.init({
+          appId: '{{ APP_ID }}',
+          cookie: true,
+          xfbml: true,
+          version: 'v3.2'
+      });
+
+      FB.AppEvents.logPageView();
+  };
+
+  (function(d, s, id) {
+      const js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s);
+      js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk.js';
+      fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+      });
+  }
+
+  function sendTokenToServer() {
+      const accessToken = FB.getAuthResponse()['accessToken'];
+      console.log('Welcome! Fetching your access token...');
+      console.log(accessToken);
+
+      FB.api('/me', function(response) {
+          console.log('Successful login for: ' + response.name);
+
+          $.ajax({
+              type: 'POST',
+              url: '/fbconnect?state={{ STATE }}',
+              processData: false,
+              data: accessToken,
+              contentType: 'application/octet-stream; charset=utf-8',
+              success: function(result) {
+                  // Handle or verify the server response
+                  if (result) {
+                      $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...');
+
+                      setTimeout(function() {
+                          window.location.href = '/restaurants';
+                      }, 4000);
+                  } else {
+                      $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                  }
+              }
+          });
+      });
+  }
 </script>
 {% endblock %}
