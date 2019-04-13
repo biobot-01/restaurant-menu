@@ -421,6 +421,7 @@ def gconnect():
     user_request = requests.get(userinfo_url, params=params)
     user_data = json.loads(user_request)
 
+    login_session['provider'] = 'google'
     login_session['username'] = user_data['name']
     login_session['picture'] = user_data['picture']
     login_session['email'] = user_data['email']
@@ -506,7 +507,9 @@ def fbconnect():
 
         return response
 
-    access_token = request.data
+    # Obtain authorization code
+    code = request.data
+    print('Access token received: {}'.format(code))
     # Exchange client token for server-side token
     fb_app_secret = web_app_id['web']['app_secret']
     auth_url = ('https://graph.facebook.com/oauth/access_token?'
@@ -514,7 +517,7 @@ def fbconnect():
                 'client_secret={}&fb_exchange_token={}'.format(
                     fb_app_id,
                     fb_app_secret,
-                    access_token,
+                    code,
                 ))
     h = httplib2.Http()
     result = h.request(auth_url, 'GET')[1]
@@ -522,31 +525,35 @@ def fbconnect():
     # Use token to get user info from API
     userinfo_url = 'https://graph.facebook.com/v3.2/me'
     # Strip expire tag from access token
-    token = result.split('&')[0]
+    # access_token = result.split(',')[0].split(':')[1].replace('"', '')
+    access_token = result.split('&')[0]
 
     userinfo_url = ('https://graph.facebook.com/v3.2/me?'
-                    'access_token={}&fields=name,id,email'.format(token))
+                    'access_token={}&fields=name,id,email'.format(
+                        access_token,
+                    ))
     # h = httplib2.Http()
     # user_request = h.request(userinfo_url, 'GET')[1]
     user_request = requests.get(userinfo_url)
-    print('token url sent for API access: {}'.format(userinfo_url))
+    print('Access token url sent for API access: {}'.format(userinfo_url))
     print('API JSON result: {}'.format(user_request))
     user_data = json.loads(user_request)
 
-    login_session['provider'] = 'facebook'
+    login_session['access_token'] = access_token
     login_session['facebook_id'] = user_data['id']
+    login_session['provider'] = 'facebook'
     login_session['username'] = user_data['name']
     login_session['email'] = user_data['email']
 
     # Get user picture
-    user_picture_url = ('https://graph.facebook.com/v3.2/me/picture?'
-                        '{}&redirect=0&height=200&width=200'.format(token))
-    user_picture_request = requests.get(user_picture_url)
-    user_picture_data = json.loads(user_picture_request)
-    print('user picture request: {}'.format(user_picture_request))
-    print('user picture data: {}'.format(user_picture_data))
+    userinfo_url = ('https://graph.facebook.com/v3.2/me/picture?'
+                    '{}&redirect=0&height=200&width=200'.format(access_token))
+    user_request = requests.get(userinfo_url)
+    user_data = json.loads(user_request)
+    print('user picture request: {}'.format(user_request))
+    print('user picture data: {}'.format(user_data))
 
-    login_session['picture'] = user_picture_data['data']['url']
+    login_session['picture'] = user_data['data']['url']
 
     # See if user exists
     user_id = get_user_id(login_session['email'])
@@ -601,6 +608,34 @@ def fbdisconnect():
         response.headers['Content-type'] = 'application/json'
 
         return response
+
+
+# Disconnect based on provider
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['google_id']
+
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+
+        del login_session['access_token']
+        del login_session['provider']
+        del login_session['user_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        flash('You have successfully been logged out.')
+
+        return redirect(url_for('show_restaurants'))
+    else:
+        flash('You were not logged in to begin with!')
+
+        return redirect(url_for('show_restaurants'))
 
 
 def create_user(login_session):
