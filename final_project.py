@@ -568,6 +568,41 @@ def fbconnect():
     return output
 
 
+@app.route('/fbdisconnect')
+def fbdisconnect():
+    facebook_id = login_session.get('facebook_id')
+    disconnect_url = ('https://graph.facebook.com/'
+                      '{}/permissions'.format(facebook_id))
+    h = httplib2.Http()
+    disconnect_request = h.request(disconnect_url, 'DELETE')[1]
+    data = json.loads(disconnect_request)
+
+    if data['status'] == '200':
+        # Reset the user's session
+        del login_session['facebook_id']
+        del login_session['user_id']
+        del login_session['username']
+        del login_session['picture']
+        del login_session['email']
+
+        response = make_response(
+            json.dumps('Successfully disconnected.'),
+            200,
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+    else:
+        # For any reason, the given token was invalid
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.'),
+            400,
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+
 def create_user(login_session):
     new_user = User(
         name=login_session['username'],
