@@ -4,7 +4,8 @@
 {% block head %}
   {{ super() }}
 
-  <script src="{{ url_for('static', filename='js/vendor/jquery-3.3.1.min.js') }}"></script>
+  <!-- <script src="{{ url_for('static', filename='js/vendor/jquery-3.3.1.min.js') }}"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   <!-- Load auth2 library & call gapi.auth2.init() to initialize the GoogleAuth object -->
   <script>
@@ -43,7 +44,7 @@
 
         <button class="button is-danger is-medium" type="button" id="signinButton">Log in with Google</button>
 
-        <div class="fb-login-button" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile, email" onlogin="checkLoginState(); sendTokenToServer();"></div>
+        <div class="fb-login-button" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile,email" onlogin="checkLoginState(); sendTokenToServer();"></div>
       </div>
 
       <form action="#" method="post">
@@ -141,7 +142,7 @@
   };
 
   (function(d, s, id) {
-      const js, fjs = d.getElementsByTagName(s)[0];
+      let js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) {return;}
       js = d.createElement(s);
       js.id = id;
