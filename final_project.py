@@ -318,7 +318,12 @@ def show_login():
     ) for x in range(32))
     login_session['state'] = state
 
-    return render_template('login.html', CLIENT_ID=g_client_id, STATE=state)
+    return render_template(
+        'login.html',
+        CLIENT_ID=g_client_id,
+        APP_ID=fb_app_id,
+        STATE=state,
+    )
 
 
 # Connect with Google login
@@ -419,7 +424,7 @@ def gconnect():
         'alt': 'json',
     }
     user_request = requests.get(userinfo_url, params=params)
-    user_data = json.loads(user_request)
+    user_data = user_request.json()
 
     login_session['provider'] = 'google'
     login_session['username'] = user_data['name']
@@ -466,17 +471,8 @@ def gdisconnect():
                       'revoke?token={}'.format(access_token))
     h = httplib2.Http()
     disconnect_request = h.request(disconnect_url, 'GET')[0]
-    data = json.loads(disconnect_request)
 
-    if data['status'] == '200':
-        # Reset the user's session
-        del login_session['access_token']
-        del login_session['google_id']
-        del login_session['user_id']
-        del login_session['username']
-        del login_session['picture']
-        del login_session['email']
-
+    if disconnect_request['status'] == '200':
         response = make_response(
             json.dumps('Successfully disconnected.'),
             200,
@@ -525,16 +521,15 @@ def fbconnect():
     # Use token to get user info from API
     userinfo_url = 'https://graph.facebook.com/v3.2/me'
     # Strip expire tag from access token
-    # access_token = result.split(',')[0].split(':')[1].replace('"', '')
-    access_token = result.split('&')[0]
+    access_token = result.split(',')[0].split(':')[1].replace('"', '')
+    # access_token = result.split('&')[0]
 
     userinfo_url = ('https://graph.facebook.com/v3.2/me?'
                     'access_token={}&fields=name,id,email'.format(
                         access_token,
                     ))
-    # h = httplib2.Http()
-    # user_request = h.request(userinfo_url, 'GET')[1]
-    user_request = requests.get(userinfo_url)
+    h = httplib2.Http()
+    user_request = h.request(userinfo_url, 'GET')[1]
     print('Access token url sent for API access: {}'.format(userinfo_url))
     print('API JSON result: {}'.format(user_request))
     user_data = json.loads(user_request)
@@ -548,7 +543,8 @@ def fbconnect():
     # Get user picture
     userinfo_url = ('https://graph.facebook.com/v3.2/me/picture?'
                     '{}&redirect=0&height=200&width=200'.format(access_token))
-    user_request = requests.get(userinfo_url)
+    h = httplib2.Http()
+    user_request = h.request(userinfo_url, 'GET')[1]
     user_data = json.loads(user_request)
     print('user picture request: {}'.format(user_request))
     print('user picture data: {}'.format(user_data))
@@ -578,36 +574,16 @@ def fbconnect():
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session.get('facebook_id')
-    disconnect_url = ('https://graph.facebook.com/'
-                      '{}/permissions'.format(facebook_id))
+    access_token = login_session.get('access_token')
+    disconnect_url = ('https://graph.facebook.com/{}/'
+                      'permissions?access_token={}'.format(
+                        facebook_id,
+                        access_token,
+                      ))
     h = httplib2.Http()
     disconnect_request = h.request(disconnect_url, 'DELETE')[1]
-    data = json.loads(disconnect_request)
 
-    if data['status'] == '200':
-        # Reset the user's session
-        del login_session['facebook_id']
-        del login_session['user_id']
-        del login_session['username']
-        del login_session['picture']
-        del login_session['email']
-
-        response = make_response(
-            json.dumps('Successfully disconnected.'),
-            200,
-        )
-        response.headers['Content-type'] = 'application/json'
-
-        return response
-    else:
-        # For any reason, the given token was invalid
-        response = make_response(
-            json.dumps('Failed to revoke token for given user.'),
-            400,
-        )
-        response.headers['Content-type'] = 'application/json'
-
-        return response
+    return 'You have been logged out.'
 
 
 # Disconnect based on provider
