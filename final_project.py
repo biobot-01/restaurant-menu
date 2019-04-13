@@ -16,12 +16,19 @@ import requests
 
 from database_setup import Base, User, Restaurant, MenuItem
 
-client_secret_file = 'client_secrets.json'
+client_secret_files = {
+    'g': 'client_secrets.json',
+    'fb': 'fb_client_secrets.json',
+}
 
-with open(client_secret_file, 'r') as f:
+with open(client_secret_files['g'], 'r') as f:
     web_client_id = json.load(f)['web']['client_id']
 
-client_id = web_client_id
+with open(client_secret_files['fb'], 'r') as f:
+    web_app_id = json.load(f)
+
+g_client_id = web_client_id
+fb_app_id = web_app_id['web']['app_id']
 
 app = Flask(__name__)
 
@@ -311,7 +318,7 @@ def show_login():
     ) for x in range(32))
     login_session['state'] = state
 
-    return render_template('login.html', CLIENT_ID=client_id, STATE=state)
+    return render_template('login.html', CLIENT_ID=g_client_id, STATE=state)
 
 
 # Connect with Google login
@@ -332,7 +339,10 @@ def gconnect():
 
     try:
         # Upgrade authorization code into credentials object
-        oauth_flow = flow_from_clientsecrets(client_secret_file, scope='')
+        oauth_flow = flow_from_clientsecrets(
+            client_secret_files['g'],
+            scope='',
+        )
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -349,12 +359,13 @@ def gconnect():
     auth_url = ('https://www.googleapis.com/oauth2/v1/'
                 'tokeninfo?access_token={}'.format(access_token))
     h = httplib2.Http()
-    result = json.loads(h.request(auth_url, 'GET')[1])
+    result = h.request(auth_url, 'GET')[1]
+    data = json.loads(result)
 
     # If there was an error in the access token info, abort
-    if result.get('error') is not None:
+    if data.get('error') is not None:
         response = make_response(
-            json.dumps(result.get('error')),
+            json.dumps(data.get('error')),
             500,
         )
         response.headers['Content-type'] = 'application/json'
@@ -364,7 +375,7 @@ def gconnect():
     # Verify access token is used for intended user
     google_id = credentials.id_token['sub']
 
-    if result['user_id'] != google_id:
+    if data['user_id'] != google_id:
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."),
             401,
@@ -374,7 +385,7 @@ def gconnect():
         return response
 
     # Verify access token is valid for this app
-    if result['issued_to'] != client_id:
+    if data['issued_to'] != g_client_id:
         response = make_response(
             json.dumps("Token's client ID doesn't match app's ID."),
             401,
@@ -408,7 +419,7 @@ def gconnect():
         'alt': 'json',
     }
     user_request = requests.get(userinfo_url, params=params)
-    user_data = user_request.json()
+    user_data = json.loads(user_request)
 
     login_session['username'] = user_data['name']
     login_session['picture'] = user_data['picture']
@@ -421,8 +432,8 @@ def gconnect():
 
     login_session['user_id'] = user_id
 
-    output = ('<h1>Welcome, {}!</h1><img src="{}" '
-              'style="width: 300px; height: 300px; '
+    output = ('<h3>Welcome, {}!</h3>'
+              '<img src="{}" style="width: 300px; height: 300px; '
               'border-radius: 50%;">'.format(
                 login_session['username'],
                 login_session['picture'],
@@ -453,12 +464,14 @@ def gdisconnect():
     disconnect_url = ('https://accounts.google.com/o/oauth2/'
                       'revoke?token={}'.format(access_token))
     h = httplib2.Http()
-    result = h.request(disconnect_url, 'GET')[0]
+    disconnect_request = h.request(disconnect_url, 'GET')[0]
+    data = json.loads(disconnect_request)
 
-    if result['status'] == '200':
+    if data['status'] == '200':
         # Reset the user's session
         del login_session['access_token']
         del login_session['google_id']
+        del login_session['user_id']
         del login_session['username']
         del login_session['picture']
         del login_session['email']
@@ -479,6 +492,80 @@ def gdisconnect():
         response.headers['Content-type'] = 'application/json'
 
         return response
+
+
+# Connect with Google login
+@app.route('/fbconnect', methods=['POST'])
+def fbconnect():
+    if request.args.get('state') != login_session['state']:
+        response = make_response(
+            json.dumps('Invalid state parameter.'),
+            401,
+        )
+        response.headers['Content-type'] = 'application/json'
+
+        return response
+
+    access_token = request.data
+    # Exchange client token for server-side token
+    fb_app_secret = web_app_id['web']['app_secret']
+    auth_url = ('https://graph.facebook.com/oauth/access_token?'
+                'grant_type=fb_exchange_token&client_id={}&'
+                'client_secret={}&fb_exchange_token={}'.format(
+                    fb_app_id,
+                    fb_app_secret,
+                    access_token,
+                ))
+    h = httplib2.Http()
+    result = h.request(auth_url, 'GET')[1]
+
+    # Use token to get user info from API
+    userinfo_url = 'https://graph.facebook.com/v3.2/me'
+    # Strip expire tag from access token
+    token = result.split('&')[0]
+
+    userinfo_url = ('https://graph.facebook.com/v3.2/me?'
+                    'access_token={}&fields=name,id,email'.format(token))
+    # h = httplib2.Http()
+    # user_request = h.request(userinfo_url, 'GET')[1]
+    user_request = requests.get(userinfo_url)
+    print('token url sent for API access: {}'.format(userinfo_url))
+    print('API JSON result: {}'.format(user_request))
+    user_data = json.loads(user_request)
+
+    login_session['provider'] = 'facebook'
+    login_session['facebook_id'] = user_data['id']
+    login_session['username'] = user_data['name']
+    login_session['email'] = user_data['email']
+
+    # Get user picture
+    user_picture_url = ('https://graph.facebook.com/v3.2/me/picture?'
+                        '{}&redirect=0&height=200&width=200'.format(token))
+    user_picture_request = requests.get(user_picture_url)
+    user_picture_data = json.loads(user_picture_request)
+    print('user picture request: {}'.format(user_picture_request))
+    print('user picture data: {}'.format(user_picture_data))
+
+    login_session['picture'] = user_picture_data['data']['url']
+
+    # See if user exists
+    user_id = get_user_id(login_session['email'])
+
+    if not user_id:
+        user_id = create_user(login_session)
+
+    login_session['user_id'] = user_id
+
+    output = ('<h3>Welcome, {}!</h3>'
+              '<img src="{}" style="width: 300px; height: 300px; '
+              'border-radius: 50%;">'.format(
+                login_session['username'],
+                login_session['picture'],
+              ))
+
+    flash('You are now logged in as {}'.format(login_session['username']))
+    print('Done!')
+    return output
 
 
 def create_user(login_session):
