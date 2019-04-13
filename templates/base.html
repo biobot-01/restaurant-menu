@@ -27,9 +27,11 @@
                 <div class="navbar-end">
                   <a class="navbar-item has-text-grey-light" href="{{ url_for('show_restaurants') }}">Restaurants</a>
 
-                  <a class="navbar-item has-text-grey-light" href="{{ url_for('show_login') }}">Login</a>
-
-                  <a class="navbar-item has-text-grey-light" href="{{ url_for('gdisconnect') }}">Logout</a>
+                  {% if 'username' not in session %}
+                    <a class="navbar-item has-text-grey-light" href="{{ url_for('show_login') }}">Login</a>
+                  {% else %}
+                    <a class="navbar-item has-text-grey-light" href="{{ url_for('disconnect') }}">Logout</a>
+                  {% endif %}
                 </div>
               </div>
             </div>
